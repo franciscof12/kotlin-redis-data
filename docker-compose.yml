@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    build:
+      context: ./src/main/kotlin/databases/postgresql
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    env_file:
+      - ./.env
+
+  redis:
+    build:
+      context: ./src/main/kotlin/databases/redis
+      dockerfile: Dockerfile
+    ports:
+      - "6379:6379"
+    networks:
+      - kaizen-network
+
+  kotlin-app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - kaizen-network
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    env_file:
+      - ./.env
+
+networks:
+  kaizen-network:
+    driver: bridge
