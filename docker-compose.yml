@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     build:
-      context: ./src/main/kotlin/databases/postgresql
+      context: src/main/kotlin/databases/postgresql
       dockerfile: Dockerfile
     ports:
       - "5432:5432"
@@ -16,7 +16,7 @@ services:
 
   redis:
     build:
-      context: ./src/main/kotlin/databases/redis
+      context: src/main/kotlin/databases/redis
       dockerfile: Dockerfile
     ports:
       - "6379:6379"
