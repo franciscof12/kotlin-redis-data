@@ -10,14 +10,14 @@ import io.ktor.server.routing.post
 
 fun Route.user() {
     get("/user/{id}") {
-        val id = call.parameters["id"]!!
+        val id = call.parameters["id"]?.toIntOrNull() ?: 0
         val user = UserController.getUserById(id)
 
-        if (user.isEmpty()) {
+        if (user == null) {
             call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid user ID"))
         }
 
-        call.respond(user)
+        call.respond(HttpStatusCode.OK, mapOf("user" to user))
     }
 
     post("/user") {

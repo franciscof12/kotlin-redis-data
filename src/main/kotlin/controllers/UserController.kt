@@ -5,14 +5,14 @@ import com.kaizen.databases.redis.RedisClient
 import com.kaizen.models.User
 
 object UserController {
-    fun getUserById(id: String): User {
+    fun getUserById(id: Int): User? {
         val redisCachedUser = RedisClient.getUser(id)
         if (redisCachedUser != null) {
             return redisCachedUser
         }
 
         val user = UserRepository.findUserById(id)
-        if (!user.isEmpty()) {
+        if (user != null) {
             RedisClient.saveUser(user)
         }
 
@@ -23,7 +23,7 @@ object UserController {
         val name = requestBody["name"] ?: ""
         val userCreated = UserRepository.createUser(User(name))
 
-        if (!userCreated.isEmpty()) {
+        if (userCreated != null) {
             RedisClient.saveUser(userCreated)
         }
     }

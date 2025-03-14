@@ -12,7 +12,7 @@ object RedisClient {
     private val connection = redisClient.connect()
     private val command = connection.sync()
 
-    fun getUser(id: String): User? {
+    fun getUser(id: Int): User? {
         val encodedUser = command.get("user:$id")
         return encodedUser?.let { Json.decodeFromString<User>(it) }
     }

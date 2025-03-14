@@ -1,53 +1,51 @@
 package com.kaizen.databases.postgresql
 
-import com.kaizen.controllers.UserController
 import com.kaizen.models.User
 import java.sql.ResultSet
 
 object UserRepository {
-    fun findUserById(id: String): User {
-        val query =
-            """
-                SELECT * FROM users
-                WHERE id = ?
-            """.trimIndent()
+    fun findUserById(id: Int): User? {
+        val query = "SELECT * FROM users WHERE id = ?"
 
-        return Database.getConnection().use { connection ->
-            connection.prepareStatement(query).use { statement ->
-                statement.setInt(1, id.toInt())
+        return try {
+            Database.getConnection().use { connection ->
+                connection.prepareStatement(query).use { statement ->
+                    statement.setInt(1, id)
 
-                statement.executeQuery().use { resultSet ->
-                    if (resultSet.next()) {
-                        User(getString(resultSet, "name"), getString(resultSet, "id"))
-                    } else {
-                        User("", "")
+                    statement.executeQuery().use { resultSet ->
+                        if (resultSet.next()) {
+                            User(resultSet.getString("name"), resultSet.getInt("id"))
+                        } else {
+                            null
+                        }
                     }
                 }
             }
+        } catch (e: Exception) {
+            null
         }
     }
 
-    fun createUser(user: User): User {
-        val query =
-            """
-                INSERT INTO users (name)
-                VALUES (?)
-                RETURNING id
-            """.trimIndent()
 
+    fun createUser(user: User): User? {
+        val query = "INSERT INTO users (name) VALUES (?) RETURNING id"
 
-        return Database.getConnection().use { connection ->
-            connection.prepareStatement(query).use { statement ->
-                statement.setString(1, user.name)
+        return try {
+            Database.getConnection().use { connection ->
+                connection.prepareStatement(query).use { statement ->
+                    statement.setString(1, user.name)
 
-                statement.executeQuery().use { resultSet ->
-                    if (resultSet.next()) {
-                        User(user.name, getString(resultSet, "id"))
-                    } else {
-                        User("", "")
+                    statement.executeQuery().use { resultSet ->
+                        if (resultSet.next()) {
+                            User(user.name, resultSet.getInt("id"))
+                        } else {
+                            null
+                        }
                     }
                 }
             }
+        } catch (e: Exception) {
+            null
         }
     }
 
