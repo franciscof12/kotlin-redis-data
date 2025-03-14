@@ -25,7 +25,7 @@ fun Route.user() {
         post {
             val body = call.receive<Map<String, String>>()
 
-            val user = try {
+            try {
                 UserController.createUser(body)
                 call.respond(HttpStatusCode.Created, mapOf("message" to "User created successfully"))
             } catch (e: IllegalArgumentException) {
