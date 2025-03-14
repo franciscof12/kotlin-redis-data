@@ -1,7 +1,6 @@
 package com.kaizen.routes
 
-import com.kaizen.databases.postgresql.UserRepository
-import com.kaizen.models.User
+import com.kaizen.controllers.UserController
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -10,16 +9,12 @@ import io.ktor.server.routing.get
 fun Route.user() {
     get("/user/{id}") {
         val id = call.parameters["id"]!!.toInt()
-        val user = handleGetUser(id)
+        val user = UserController.getUserById(id)
 
         if (user.isEmpty()) {
-            call.respond(HttpStatusCode.NotFound, mapOf("error" to "user not found"))
+            call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid user ID"))
         }
 
         call.respond(user)
     }
-}
-
-fun handleGetUser(id: Int): User {
-    return UserRepository.findUserById(id)
 }

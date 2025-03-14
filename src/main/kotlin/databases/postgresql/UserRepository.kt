@@ -4,7 +4,11 @@ import com.kaizen.models.User
 
 object UserRepository {
     fun findUserById(id: Int): User {
-        val query = "SELECT * FROM users WHERE id = ?"
+        val query =
+            """
+                SELECT * FROM users
+                WHERE id = ?
+            """.trimIndent()
 
         return Database.getConnection().use { connection ->
             connection.prepareStatement(query).use { statement ->
