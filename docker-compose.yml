@@ -8,11 +8,18 @@ services:
     ports:
       - "5432:5432"
     environment:
-      DATABASE_URL: ${DATABASE_URL}
-      DATABASE_USER: ${DATABASE_USER}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     env_file:
       - ./.env
+    networks:
+      - kaizen-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${DATABASE_USER}", "-d", "${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     build:
@@ -28,8 +35,10 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - kaizen-network
     environment:
