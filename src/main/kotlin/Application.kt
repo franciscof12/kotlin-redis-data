@@ -1,5 +1,6 @@
 package com.kaizen
 
+import com.kaizen.databases.postgresql.Database
 import io.ktor.server.application.Application
 
 fun main(args: Array<String>) {
@@ -7,7 +8,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    Database.getConnection()
     configureSerialization()
     configureRouting()
 }
-

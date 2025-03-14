@@ -1,18 +1,14 @@
 val kotlin_version: String by project
 val logback_version: String by project
 
-kotlin {
-    jvmToolchain(17)
-}
+group = "com.kaizen"
+version = "0.0.1"
 
 plugins {
     kotlin("jvm") version "2.1.10"
     id("io.ktor.plugin") version "3.1.1"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.10"
 }
-
-group = "com.kaizen"
-version = "0.0.1"
 
 application {
     mainClass = "io.ktor.server.netty.EngineMain"
@@ -34,4 +30,5 @@ dependencies {
     implementation("io.ktor:ktor-server-config-yaml")
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    implementation("org.postgresql:postgresql:42.7.5")
 }
