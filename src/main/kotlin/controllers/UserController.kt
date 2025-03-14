@@ -11,11 +11,20 @@ object UserController {
             return redisCachedUser
         }
 
-        val user = UserRepository.findUserById(id.toInt())
+        val user = UserRepository.findUserById(id)
         if (!user.isEmpty()) {
             RedisClient.saveUser(user)
         }
 
         return user
+    }
+
+    fun createUser(requestBody: Map<String, String>) {
+        val name = requestBody["name"] ?: ""
+        val userCreated = UserRepository.createUser(User(name))
+
+        if (!userCreated.isEmpty()) {
+            RedisClient.saveUser(userCreated)
+        }
     }
 }
