@@ -1,6 +1,7 @@
 package com.kaizen.databases.postgresql
 
 import com.kaizen.models.User
+import java.sql.ResultSet
 
 object UserRepository {
     fun findUserById(id: Int): User {
@@ -16,10 +17,7 @@ object UserRepository {
 
                 statement.executeQuery().use { resultSet ->
                     if (resultSet.next()) {
-                        User(
-                            id = resultSet.getString("id"),
-                            name = resultSet.getString("name")
-                        )
+                        User(getString(resultSet, "id"), getString(resultSet, "name"))
                     } else {
                         User("", "")
                     }
@@ -27,5 +25,8 @@ object UserRepository {
             }
         }
     }
+
+    private fun getString(resultSet: ResultSet, columnLabel: String) =
+        resultSet.getString(columnLabel)
 }
 
