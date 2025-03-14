@@ -1,14 +1,15 @@
 package com.kaizen.databases.postgresql
 
+import com.kaizen.databases.postgresql.Database.getConnection
 import com.kaizen.models.User
 import java.sql.ResultSet
 
 object UserRepository {
-    fun findUserById(id: Int): User? {
+    fun selectUserById(id: Int): User? {
         val query = "SELECT * FROM users WHERE id = ?"
 
         return try {
-            Database.getConnection().use { connection ->
+            getConnection().use { connection ->
                 connection.prepareStatement(query).use { statement ->
                     statement.setInt(1, id)
 
@@ -27,11 +28,11 @@ object UserRepository {
     }
 
 
-    fun createUser(user: User): User? {
+    fun insertUser(user: User): User? {
         val query = "INSERT INTO users (name) VALUES (?) RETURNING id"
 
         return try {
-            Database.getConnection().use { connection ->
+            getConnection().use { connection ->
                 connection.prepareStatement(query).use { statement ->
                     statement.setString(1, user.name)
 

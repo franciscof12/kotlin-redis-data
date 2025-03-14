@@ -1,5 +1,6 @@
 package com.kaizen.databases.postgresql
 
+import com.kaizen.databases.postgresql.Database.getConnection
 import java.sql.Statement
 
 object InitializeDatabase {
@@ -16,7 +17,7 @@ object InitializeDatabase {
         """.trimIndent()
 
         try {
-            Database.getConnection().createStatement().use { statement: Statement ->
+            getConnection().createStatement().use { statement: Statement ->
                 statement.execute(sql)
             }
         } catch (e: Exception) {
