@@ -8,7 +8,7 @@ import io.ktor.server.routing.get
 
 fun Route.user() {
     get("/user/{id}") {
-        val id = call.parameters["id"]!!.toInt()
+        val id = call.parameters["id"]!!
         val user = UserController.getUserById(id)
 
         if (user.isEmpty()) {
