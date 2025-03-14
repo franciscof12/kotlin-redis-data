@@ -22,8 +22,14 @@ fun Route.user() {
 
     post("/user") {
         val body = call.receive<Map<String, String>>()
-        val user = UserController.createUser(body)
 
-        call.respond(HttpStatusCode.Created, mapOf("message" to "User created successfully"))
+        val user = try {
+            UserController.createUser(body)
+            call.respond(HttpStatusCode.Created, mapOf("message" to "User created successfully"))
+        } catch (e: IllegalArgumentException) {
+            call.respond(HttpStatusCode.BadRequest, mapOf("error" to e.message))
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Internal server error"))
+        }
     }
 }

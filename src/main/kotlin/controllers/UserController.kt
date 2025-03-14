@@ -6,21 +6,21 @@ import com.kaizen.models.User
 
 object UserController {
     fun getUserById(id: Int): User? {
-        val redisCachedUser = RedisClient.getUser(id)
-        if (redisCachedUser != null) {
-            return redisCachedUser
+        return try {
+            RedisClient.getUser(id) ?: UserRepository.findUserById(id)?.apply {
+                RedisClient.saveUser(this)
+            }
+        } catch (e: Exception) {
+            null
         }
-
-        val user = UserRepository.findUserById(id)
-        if (user != null) {
-            RedisClient.saveUser(user)
-        }
-
-        return user
     }
 
     fun createUser(requestBody: Map<String, String>) {
-        val name = requestBody["name"] ?: ""
+        val name = requestBody["name"]
+        if (name.isNullOrBlank()) {
+            throw IllegalArgumentException("Name is required")
+        }
+
         val userCreated = UserRepository.createUser(User(name))
 
         if (userCreated != null) {
