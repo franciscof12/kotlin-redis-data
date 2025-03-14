@@ -1,6 +1,7 @@
 .PHONY: up down restart logs build clean
 
 up:
+	cp .env.docker .env
 	docker-compose up -d
 
 down:
@@ -11,9 +12,6 @@ restart:
 
 logs:
 	docker-compose logs -f
-
-build:
-	docker-compose build
 
 clean:
 	docker-compose down --volumes --remove-orphans
